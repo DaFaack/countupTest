@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer mp;
     CountDownTimer timer;
     int seconds, allPoints;
+    boolean timerstate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         sound1.setOnClickListener(view -> {
+            if(timerstate){
+                timer.cancel();
+                timerstate = false;
+            }
             startChonometer();
             mp = MediaPlayer.create(MainActivity.this, R.raw.sound1);
             mp.start();
@@ -47,11 +52,16 @@ public class MainActivity extends AppCompatActivity {
                 public void onCompletion(MediaPlayer mediaPlayer) {
                     allPoints = seconds;
                     timer.cancel();
+                    timerstate = false;
                 }
             });
         });
 
         sound2.setOnClickListener(view -> {
+            if(timerstate){
+                timer.cancel();
+                timerstate = false;
+            }
             startChonometer();
             mp = MediaPlayer.create(MainActivity.this, R.raw.sound2);
             mp.start();
@@ -60,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onCompletion(MediaPlayer mediaPlayer) {
                     allPoints = seconds;
                     timer.cancel();
+                    timerstate = false;
                 }
             });
         });
@@ -70,7 +81,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 allPoints = seconds;
-                timer.cancel();
+                if(timerstate){
+                    timer.cancel();
+                    timerstate = false;
+                }
 
                 if(mp!=null){
                     mp.stop();
@@ -101,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
         };
         timer.start();
-
+        timerstate = true;
 
     }
 
