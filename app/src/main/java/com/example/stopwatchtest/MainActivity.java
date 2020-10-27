@@ -3,12 +3,15 @@ package com.example.stopwatchtest;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,11 +20,11 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
-    private long timeWhenStopped = 0;
-    private Chronometer chronometer;
     TextView punkte;
     Button sound1, sound2, stopsound;
     MediaPlayer mp;
+    CountDownTimer timer;
+    int seconds, allPoints;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
         stopsound = findViewById(R.id.stopbutton);
 
 
-        chronometer =  findViewById(R.id.chronometer);
         punkte =  findViewById(R.id.punkte);
 
 
@@ -43,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
             mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
-
-                    chronometer.stop();
+                    allPoints = seconds;
+                    timer.cancel();
                 }
             });
         });
@@ -56,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
             mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
-
-                    chronometer.stop();
+                    allPoints = seconds;
+                    timer.cancel();
                 }
             });
         });
@@ -67,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
         stopsound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chronometer.stop();
+                allPoints = seconds;
+                timer.cancel();
 
                 if(mp!=null){
                     mp.stop();
@@ -78,23 +81,30 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    
     // the method for when we press the 'start' button
     public void startChonometer() {
-        chronometer.setOnChronometerTickListener(chronometer -> {
 
-            timeWhenStopped = chronometer.getBase() - SystemClock.elapsedRealtime();
-            int seconds =  (int) timeWhenStopped / 1000;
-            punkte.setText( "Points: " + Math.abs(seconds));
-        });
+        long totalSeconds = 30;
+        long intervalSeconds = 1;
 
-        chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
-        chronometer.start();
+        timer = new CountDownTimer(totalSeconds * 1000, intervalSeconds * 1000) {
 
+            public void onTick(long millisUntilFinished) {
 
+                seconds = allPoints + (int) ((totalSeconds * 1000 - millisUntilFinished) / 1000);
+                punkte.setText( "Points: " + seconds);
+            }
+
+            public void onFinish() {
+                Log.d( "done!", "Time's up!");
+            }
+
+        };
+        timer.start();
 
 
     }
+
 
 
 }
