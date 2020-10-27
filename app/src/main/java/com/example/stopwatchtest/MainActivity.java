@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     // the method for when we press the 'start' button
     public void startChonometer() {
 
-        long totalSeconds = 30;
+        long totalSeconds = 1000;
         long intervalSeconds = 1;
 
         timer = new CountDownTimer(totalSeconds * 1000, intervalSeconds * 1000) {
